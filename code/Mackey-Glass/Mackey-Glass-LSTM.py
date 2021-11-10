@@ -29,9 +29,9 @@ np.random.shuffle(data_)
 print(data_)
 
 
-#data_中切出训练数据x，[第一维不管，切前面的5*24或-delay，最后一维不管全都要]
+#data_中切出训练数据x，[第一维不管，切-delay，最后一维不管全都要]
 x = data_[:, :-delay]
-#data_中切出目标数据y，[第一维不动，切最后一个值，要第一个值pm2.5的值]
+#data_中切出目标数据y，[第一维不动，切最后一个值，要第一个值]
 y = data_[:, -1]
 print(x.shape, y.shape)
 
@@ -116,19 +116,8 @@ print(history.history.get('val_loss'))
 #存储模型，方便使用
 model.save('MAD-LSTM-MG-3-16-300.h5')
 
-'''
-1、如何评价model：
-model.evaluate()：用来评价，参数为输入数据和对应的实际预测值。这里用划分好的test数据。
-平运算得到均的loss值或者平均的准确率是多少。
-内部参数verbose=0,表示不显示进度条，直接显示结果。
-'''
-error = model.evaluate(test_x, test_y, verbose=0)
-print(error)
-#运算得到平均的损失值。
 
 
-
-#实验结果发现有一些过拟合。
 plt.plot(history.epoch, history.history.get('loss'), 'y', label='Train loss')
 plt.plot(history.epoch, history.history.get('val_loss'), 'b', label='Test loss')
 plt.title("Loss")
@@ -136,13 +125,5 @@ plt.xlabel('Iterations')
 plt.ylabel('Loss')
 plt.legend()
 plt.savefig('Loss')
-plt.show()
-
-
-
-m = [i for i in range(len(data))]
-plt.plot(m, data, 'b')
-plt.legend()
-plt.savefig('轨迹图')
 plt.show()
 
