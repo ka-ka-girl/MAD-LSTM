@@ -74,7 +74,6 @@ a1 = tf.keras.layers.LSTM(32, return_sequences=True)(a)
 a2 = tf.keras.layers.LSTM(32)(a1)
 
 
-#x = tf.keras.layers.Dense(32, activation='relu')(x)
 predictions = tf.keras.layers.Dense(1)(a2)
 
 model = tf.keras.models.Model(inputs=inputs, outputs=predictions)
