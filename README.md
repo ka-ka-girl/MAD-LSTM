@@ -10,4 +10,4 @@ The tensorflow implementation of the paper entitled "Distributed Multi-Agent Lea
 * Lorenz (Lorenz-1.py)
 * PM2.5 (北京空气_2010.1.1-2014.12.31.csv)
 # Usage
-The file "Lorenz-MAD-LSTM-3.py" represents a multi-agent distributed LSTM (MAD-LSTM) code with 3 agents.
+The file "Lorenz-MAD-LSTM-3.py" represents the code of a multi-agent distributed LSTM (MAD-LSTM) with 3 agents on the Lorenz dataset.
