@@ -136,9 +136,7 @@ a = tf.keras.layers.LSTM(48, return_sequences=True)(inputs)
 b = tf.keras.layers.LSTM(48, return_sequences=True)(inputs)
 c = tf.keras.layers.LSTM(48, return_sequences=True)(inputs)
 d = tf.keras.layers.LSTM(48, return_sequences=True)(inputs)
-#x1 = a*0.9 + b*0.05 + c*0.05
-#x2 = a*0.05 + b*0.9 + c*0.05
-#x3 = a*0.05 + b*0.05 + c*0.9
+
 
 a1 = tf.keras.layers.LSTM(48, return_sequences=True)(a)
 b1 = tf.keras.layers.LSTM(48, return_sequences=True)(b)
@@ -193,7 +191,7 @@ f.close  #  关闭文件
 
 print(history.history.get('loss'))
 print(history.history.get('val_loss'))
-#实验结果发现有一些过拟合。
+
 plt.plot(history.epoch, history.history.get('loss'), 'y', label='Training loss')
 plt.plot(history.epoch, history.history.get('val_loss'), 'b', label='Test loss')
 plt.legend()
@@ -203,42 +201,3 @@ plt.show()
 #存储模型，方便使用
 model.save('pm2.5_v3.h5')
 
-
-'''
-1、如何评价model：
-model.evaluate()：用来评价，参数为输入数据和对应的实际预测值。这里用划分好的test数据。
-平运算得到均的loss值或者平均的准确率是多少。
-内部参数verbose=0,表示不显示进度条，直接显示结果。
-'''
-error = model.evaluate(test_x, test_y, verbose=0)
-print(error)
-#运算得到平均的损失值。
-'''
-2、model预测使用：
-预测单条数据：
-预测多条数据：model.predict()：用来预测，
-'''
-pre_test = model.predict(test_x)  #返回numpy数据
-print(pre_test)
-'''
-2、model预测使用：
-预测单条数据：测试对未知数据的预测，预测2015.1.1，23时pm2.5.
-预测多条数据：
-
-data_test = data[-120: ]  #取该观测点之前的 120观测数据
-#取所有的行，以及第五列之后的所有列
-data_test = data_test.iloc[:, 5:]
-#对cbwd进行独热编码，转换成哑变量.如果没有出现某一个值（比如cv），此时要添加0
-data_test = data_test.join(pd.get_dummies(data_test.cbwd))
-#去掉'cbwd'这一列，所以要加axis=1,又要立即生效所以要加inplace=True。
-data_test.drop('cbwd', axis=1, inplace=True)
-#测试的特征顺序要与我们训练数据的特征顺序保证一致。如果不确定，可以用以下方法设置
-data_test.reindex(columns=['pm2.5', 'dew', 'temp', 'press', 'iws', 'snow', 'rain', 'NE', 'NW', 'SE', 'cv'])
-#数据归一化，使用训练数据中得到的均值和方差
-data_test = (data_test - mean)/std
-#取出numpy类型的数据
-data_test = data_test.to_numpy()
-#将单条数据增加维度，使其维度为3.在第一维扩展故为0.
-data_test = np.expand_dims(data_test, 0)
-a = model.predict(data_test)  #预测值为2015年1月1日23时pm2.5的值。（1,1是 41，1.2是51）
-'''
