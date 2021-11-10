@@ -82,10 +82,6 @@ b = tf.keras.layers.LSTM(32, return_sequences=True)(inputs)
 c = tf.keras.layers.LSTM(32, return_sequences=True)(inputs)
 
 
-#x1 = a*0.9 + b*0.05 + c*0.05
-#x2 = a*0.05 + b*0.9 + c*0.05
-#x3 = a*0.05 + b*0.05 + c*0.9
-
 a1 = tf.keras.layers.LSTM(32, return_sequences=True)(a)
 b1 = tf.keras.layers.LSTM(32, return_sequences=True)(b)
 c1 = tf.keras.layers.LSTM(32, return_sequences=True)(c)
