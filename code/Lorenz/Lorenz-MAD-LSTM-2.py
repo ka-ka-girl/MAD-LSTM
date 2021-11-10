@@ -6,8 +6,7 @@ import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
 import pandas as pd
-import os
-os.environ["CUDA_VISIBLE_DEVICES"] = '0' #use GPU with ID=0
+
 
 def lorenz(w, t, p, r, b):
     x, y, z = w
@@ -20,8 +19,7 @@ print(data.shape)
 '''
 划分训练数据
 '''
-#sequence_length要观测的数据,delay预测未来一天的数据，即24
-#训练集为前5天的数据，预测值为后一天的数据（5*24个值再间隔24个的值）。
+
 sequence_length = 200
 delay = 1
 #方法1：直接循环采取数据，由于数据重复，会占用大量内存
@@ -41,9 +39,9 @@ np.random.shuffle(data_sf)
 print(data_sf)
 
 
-#data_中切出训练数据x，[第一维不管，切前面的5*24或-delay，最后一维不管全都要]
+#data_中切出训练数据x，[第一维不管，切-delay，最后一维不管全都要]
 x = data_sf[:, :-delay, :]
-#data_中切出目标数据y，[第一维不动，切最后一个值，要第一个值pm2.5的值]
+#data_中切出目标数据y，[第一维不动，切最后一个值，要第一个值]
 y = data_sf[:, -1, :]
 print(x.shape, y.shape)
 
@@ -136,53 +134,4 @@ print(history.history.get('val_loss'))
 
 #存储模型，方便使用
 model.save('MAD-LSTM-5-32-300_3.h5')
-
-'''
-1、如何评价model：
-model.evaluate()：用来评价，参数为输入数据和对应的实际预测值。这里用划分好的test数据。
-平运算得到均的loss值或者平均的准确率是多少。
-内部参数verbose=0,表示不显示进度条，直接显示结果。
-'''
-error = model.evaluate(test_x, test_y, verbose=0)
-print(error)
-#运算得到平均的损失值。
-'''
-2、model预测使用：
-预测单条数据：
-预测多条数据：model.predict()：用来预测，
-
-#设定预测数据pre_x,预测后200步
-pre_x = data_[:, :-delay, :]
-real_x = data_[:, -1, :]
-
-future_len = int(data_.shape[0]) - 1000
-pre_x = pre_x[future_len:]
-real_x = real_x[future_len:]
-
-pre_data = model.predict(pre_x)
-print(pre_data)
-print(pre_data.shape)
-'''
-
-#创建三维坐标系,画出质点的移动轨迹。
-fig = plt.figure()
-#ax = Axes3D(fig)                     #创建三维坐标系
-ax = fig.add_subplot(1, 1, 1, projection='3d')
-ax.plot(data[:, 0], data[:, 1], data[:, 2], c='g')   #画出质点的移动轨迹
-#ax.plot(pre_data[:, 0], pre_data[:, 1], pre_data[:, 2], c='r')
-#ax.plot(tmp['X'], tmp['Y'], tmp['Z'], c='r')
-plt.savefig('轨迹图')
-plt.show()
-
-#实验结果发现有一些过拟合。
-plt.plot(history.epoch, history.history.get('loss'), 'y', label='Train loss')
-plt.plot(history.epoch, history.history.get('val_loss'), 'b', label='Test loss')
-plt.title("Loss")
-plt.xlabel('Iterations')
-plt.ylabel('Loss')
-plt.legend()
-plt.savefig('Loss')
-plt.show()
-
-
 
